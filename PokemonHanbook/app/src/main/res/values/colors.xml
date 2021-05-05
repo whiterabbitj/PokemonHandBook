@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#B4D6D3</color>
+    <color name="colorSecondary">#D7FDF0</color>
+    <color name="colorThird">#B8BAC8</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#1FC6B6</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="lightGrey">#C8C7C7</color>
+    <color name="darkGrey">#6E6C6C</color>
+    <color name="colorDefault">#EEEEEE</color>
+
+
+
+
+    <color name="bugColour">#FF009688</color>
+    <color name="dragon">#FF5722</color>
+    <color name="fairy">#FF5722</color>
+
+</resources>

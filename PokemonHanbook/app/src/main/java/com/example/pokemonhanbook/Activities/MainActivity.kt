@@ -1,26 +1,21 @@
 package com.example.pokemonhanbook.Activities
 
 import android.os.Bundle
-import android.os.StrictMode
-import android.widget.TextView
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
-import com.example.pokemonhanbook.API.PokemonData
 import com.example.pokemonhanbook.Adpaters.ItemAdapter
 import com.example.pokemonhanbook.R
-import com.google.android.material.tabs.TabLayout
 import me.sargunvohra.lib.pokekotlin.model.Pokemon
-import me.sargunvohra.lib.pokekotlin.model.PokemonSprites
-
 
 
 class MainActivity : AppCompatActivity(),  ItemAdapter.IPokemonSelected
 {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState)
         setContentView(R.layout.mainactivity)
+
     }
 
     override fun onPokemonSelected(fso: Pokemon) {

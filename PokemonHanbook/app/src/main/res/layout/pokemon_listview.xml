@@ -5,15 +5,63 @@
                                        android:id="@+id/constraintLayout"
                                        android:layout_width="match_parent"
                                        android:layout_height="match_parent"
+                                       android:background="@color/colorPrimary"
                                        android:fillViewport="true"
                                        android:scrollbars="none"
                                        tools:context="MainViewFragment">
 
-    <androidx.appcompat.widget.AppCompatEditText android:layout_width="match_parent"
-                                                 android:layout_marginTop="20dp"
-                                                 android:layout_height="50dp"
-                                                 android:id="@+id/editTextSearch"
-    />
+    <androidx.appcompat.widget.LinearLayoutCompat android:layout_width="match_parent"
+                                                  android:layout_height="wrap_content"
+                                                  android:orientation="horizontal"
+                                                  android:layout_marginTop="50dp">
+
+
+
+    <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+
+
+
+                <androidx.appcompat.widget.AppCompatEditText android:layout_width="wrap_content"
+                                                             android:layout_height="30dp"
+                                                             android:width="200dp"
+                                                             android:textSize="13sp"
+                                                             android:paddingStart="5dp"
+                                                             android:background="@drawable/rounded_editext"
+                                                             android:layout_gravity="center"
+                                                             android:layout_marginLeft="15dp"
+                                                             android:id="@+id/editTextSearch"
+                                                             android:paddingLeft="5dp"
+                                                             android:layout_marginStart="15dp"/>
+
+
+                 <androidx.appcompat.widget.AppCompatImageButton
+                                                             android:id="@+id/btnDeleteText"
+                                                             android:layout_width="20dp"
+                                                             android:background="@null"
+                                                             android:src="@drawable/cancel"
+                                                             android:layout_alignRight="@+id/editTextSearch"
+                                                             android:layout_gravity="center_vertical"
+                                                             android:layout_height="20dp"
+                                                             android:layout_marginRight="8dp"
+                                                             android:visibility="gone"
+                                                             android:layout_marginTop="5dp" android:layout_marginEnd="8dp"/>
+
+    </RelativeLayout>
+
+
+        <androidx.appcompat.widget.AppCompatButton android:layout_width="70dp"
+                                                   android:layout_marginLeft="15dp"
+                                                   android:id="@+id/btnSearch"
+                                                   android:background="@drawable/button"
+                                                   android:layout_height="30dp"
+                                                   android:textSize="12sp"
+                                                   android:layout_gravity="center"
+                                                   android:text="@string/search"
+                                                   android:textColor="@color/white"
+                                                   android:layout_marginStart="15dp"/>
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
 
@@ -21,7 +69,7 @@
             android:id="@+id/lw_pokemonList"
             android:divider="@drawable/divider"
             android:dividerHeight="1dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="100dp"
             android:layout_marginBottom="50dp"
             android:nestedScrollingEnabled="true"
             android:layout_width="fill_parent"
@@ -30,14 +78,16 @@
             android:scrollbars="none"
     />
 
-                    <androidx.appcompat.widget.AppCompatButton android:layout_width="90dp"
+                    <androidx.appcompat.widget.AppCompatButton
+                            android:layout_width="200dp"
                             android:id="@+id/btnLoadMorePokemon"
                             android:background="@drawable/button"
                             android:layout_height="50dp"
                             android:layout_gravity="center_horizontal|bottom"
-                            android:textSize="12sp"
-                            android:layout_marginTop= "15dp"
-                            android:text="@string/placeHolder"
+                            android:textSize="17sp"
+                            android:layout_marginTop= "16dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="@string/loadMore"
                             android:textColor="@color/white"
                     />
 

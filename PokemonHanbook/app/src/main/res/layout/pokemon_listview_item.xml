@@ -24,20 +24,18 @@
 
 
             <androidx.cardview.widget.CardView
-                    android:layout_width="75dp"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="8dp"
-                    app:cardBackgroundColor="@color/colorThird"
-                    android:layout_margin="5dp"
-                    android:elevation="20dp">
+                                                android:layout_width="75dp"
+                                                android:layout_height="wrap_content"
+                                                app:cardCornerRadius="8dp"
+                                                app:cardBackgroundColor="@color/colorThird"
+                                                android:layout_margin="5dp"
+                                                android:elevation="20dp">
 
                 <androidx.appcompat.widget.AppCompatImageView android:layout_width="75dp"
                                                               android:id="@+id/iv_Pokemon"
                                                               android:layout_height="75dp"
                                                               android:scaleType="centerCrop"
                                                               android:layout_gravity="start"/>
-
-
 
             </androidx.cardview.widget.CardView>
 
@@ -47,7 +45,21 @@
                                                          android:layout_marginStart="30dp"
                                                          android:layout_height="wrap_content"
                                                          android:text="@string/placeHolder"
-                                                         android:textSize="20sp" android:layout_marginLeft="30dp"/>
+                                                         android:textColor="@color/colorPrimaryDark"
+                                                         android:textSize="15sp"
+                                                         android:layout_marginLeft="30dp"/>
+
+            <Space android:layout_weight="1" android:layout_width="0dp" android:layout_height="0dp"/>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                                                        android:id="@+id/llTypes"
+                                                         android:layout_width="80dp"
+                                                         android:layout_height="wrap_content"
+                                                         android:layout_gravity="center"
+                                                        android:gravity="end"                                                         android:layout_marginLeft="60dp"
+                                                         android:background="@color/colorSecondary"
+                                                         android:orientation="vertical"
+                                                         android:layout_marginStart="60dp"/>
 
 
 <!--            <androidx.appcompat.widget.AppCompatTextView android:layout_width="match_parent"-->

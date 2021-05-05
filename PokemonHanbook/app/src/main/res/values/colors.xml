@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#B4D6D3</color>
-    <color name="colorSecondary">#D7FDF0</color>
-    <color name="colorThird">#B8BAC8</color>
-    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorPrimary">#E3E4DB</color>
+    <color name="colorSecondary">#CAD5DA</color>
+    <color name="colorThird">#AEA4BF</color>
+    <color name="colorPrimaryDark">#3B252C</color>
     <color name="colorAccent">#1FC6B6</color>
     <color name="white">#FFFFFFFF</color>
     <color name="lightGrey">#C8C7C7</color>
@@ -14,7 +14,25 @@
 
 
     <color name="bugColour">#FF009688</color>
-    <color name="dragon">#FF5722</color>
-    <color name="fairy">#FF5722</color>
+    <color name="dragon1">#FF5722</color>
+    <color name="dragon2">#03A9F4</color>
+    <color name="fairy">#FFC3BE</color>
+    <color name="fire">#FF9800</color>
+    <color name="ghost">#A629FF</color>
+    <color name="ground1">#FFEB3B</color>
+    <color name="ground2">#D5968B29</color>
+    <color name="physic">#D5DE18D5</color>
+    <color name="steel">#D5586265</color>
+    <color name="dark">#D523282A</color>
+    <color name="electric">#E3CE14</color>
+    <color name="fightingh">#8C6900</color>
+    <color name="flying1">#03A9F4</color>
+    <color name="flying2">#DAD8D2</color>
+    <color name="grass">#8BC34A</color>
+    <color name="ice">#A5D9F1</color>
+    <color name="poison">#9868A1</color>
+    <color name="rock">#7A6807</color>
+    <color name="water">#2196F3</color>
+
 
 </resources>

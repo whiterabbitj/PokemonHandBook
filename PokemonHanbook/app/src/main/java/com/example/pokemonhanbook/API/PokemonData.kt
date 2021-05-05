@@ -18,7 +18,7 @@ class PokemonData {
          try {
              val pokeApi = PokeApiClient()
              var tempCounter = prevItems
-             while(tempCounter < totalItems)
+             while(tempCounter <= totalItems)
              {
                  val item : Pokemon = pokeApi.getPokemon(tempCounter)
                  pokemonListDta.add(item)

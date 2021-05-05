@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.cardview.widget.CardView
+            android:paddingBottom="50dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardUseCompatPadding="true"
+            android:elevation="15dp" tools:ignore="MissingConstraints">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:padding="10dp"
+                android:background="@color/colorSecondary"
+                android:orientation="horizontal"
+                tools:layout_editor_absoluteY="4dp"
+                tools:layout_editor_absoluteX="0dp">
+
+
+            <androidx.cardview.widget.CardView
+                    android:layout_width="75dp"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="8dp"
+                    app:cardBackgroundColor="@color/colorThird"
+                    android:layout_margin="5dp"
+                    android:elevation="20dp">
+
+                <androidx.appcompat.widget.AppCompatImageView android:layout_width="75dp"
+                                                              android:id="@+id/iv_Pokemon"
+                                                              android:layout_height="75dp"
+                                                              android:scaleType="centerCrop"
+                                                              android:layout_gravity="start"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.appcompat.widget.AppCompatTextView android:layout_width="wrap_content"
+                                                         android:id="@+id/tv_pokemonName"
+                                                         android:layout_gravity="center_vertical"
+                                                         android:layout_marginStart="30dp"
+                                                         android:layout_height="wrap_content"
+                                                         android:text="@string/placeHolder"
+                                                         android:textColor="@color/colorPrimaryDark"
+                                                         android:textSize="15sp"
+                                                         android:layout_marginLeft="30dp"/>
+
+            <Space android:layout_weight="1" android:layout_width="0dp" android:layout_height="0dp"/>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/llTypes"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="end"                                                         android:layout_marginLeft="60dp"
+                    android:background="@color/colorSecondary"
+                    android:orientation="vertical"
+                    android:layout_marginStart="60dp"/>
+
+
+            <!--            <androidx.appcompat.widget.AppCompatTextView android:layout_width="match_parent"-->
+            <!--                                                         android:layout_height="wrap_content"-->
+            <!--                                                         android:id="@+id/tv_productDescription"-->
+            <!--                                                         android:text="@string/placeHolder"-->
+            <!--                                                         android:textSize="15sp"-->
+            <!--                                                         android:paddingTop="10dp"-->
+            <!--                                                         android:layout_marginEnd="10dp"-->
+            <!--                                                         android:layout_marginStart="20dp"-->
+            <!--                                                         android:layout_marginRight="10dp"-->
+            <!--                                                         android:layout_marginLeft="20dp"/>-->
+
+            <!--            <androidx.appcompat.widget.LinearLayoutCompat android:layout_width="match_parent"-->
+            <!--                                                          android:layout_height="wrap_content"-->
+            <!--                                                          android:orientation="horizontal"-->
+            <!--                                                          android:paddingBottom="10dp"-->
+            <!--                                                          android:layout_marginStart="20dp"-->
+            <!--                                                          android:layout_marginEnd="10dp"-->
+            <!--                                                          android:layout_marginLeft="20dp"-->
+            <!--                                                          android:layout_marginRight="10dp">-->
+
+
+            <!--                <androidx.appcompat.widget.AppCompatTextView  android:layout_width="wrap_content"-->
+            <!--                          android:layout_height="wrap_content"-->
+            <!--                          android:id="@+id/tv_productValues"-->
+            <!--                          android:text="@string/placeHolder"-->
+            <!--                          android:layout_gravity="center_vertical"-->
+            <!--                          android:textSize="12sp"-->
+            <!--                          android:paddingTop="10dp"/>-->
+
+
+            <!--                <androidx.appcompat.widget.AppCompatButton android:layout_width="90dp"-->
+            <!--                        android:id="@+id/btn_productAddPrice"-->
+            <!--                        android:background="@drawable/button"-->
+            <!--                        android:layout_height="50dp"-->
+            <!--                        android:textSize="12sp"-->
+            <!--                        android:layout_marginTop= "15dp"-->
+            <!--                        android:text="@string/placeHolder"-->
+            <!--                        android:textColor="@color/white"-->
+            <!--                />-->
+
+            <!--            </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

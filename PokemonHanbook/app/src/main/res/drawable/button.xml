@@ -3,7 +3,7 @@
     <item android:state_pressed="false">
         <shape android:shape="rectangle">
             <corners android:radius="1000dp" />
-            <solid android:color="#000000" />
+            <solid android:color="#B8BAC8" />
             <padding
                     android:bottom="4dp"
                     android:left="4dp"
@@ -14,10 +14,10 @@
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
             <corners android:radius="1000dp" />
-            <solid android:color="#4C9300" />
+            <solid android:color="#AA78A6" />
             <stroke
                     android:width="2dip"
-                    android:color="#4C9300" />
+                    android:color="#AA78A6" />
             <padding
                     android:bottom="4dp"
                     android:left="4dp"

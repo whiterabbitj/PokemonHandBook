@@ -49,8 +49,6 @@ class ItemAdapter(val context: Context, val itemList: ArrayList<Pokemon>) : Base
 
         // Instantiate the NoticeDialogListener so we can send events to the host
 
-
-
         if (convertView == null) {
             val layoutInflater = LayoutInflater.from(context)
             view = layoutInflater.inflate(R.layout.pokemon_listview_item, parent, false)
@@ -82,7 +80,7 @@ class ItemAdapter(val context: Context, val itemList: ArrayList<Pokemon>) : Base
             vh.llTypes.addView(textViewAbility)
         }
 
-        vh.tvPokemonName.text = String.format("%s%s", itemList[position].name[0].toUpperCase(),itemList[position].name.substring(1))
+        vh.tvPokemonName.text = String.format("%s%s%s",itemList[position].id.toString(), itemList[position].name[0].toUpperCase(),itemList[position].name.substring(1))
         Glide.with(context).load(itemList[position].sprites.frontDefault).into(vh.ivProductImage)
 //        Glide.with(context).load(context.resources.getIdentifier("icon"+itemList[position].id.toString(), "drawable", context.packageName)).into(vh.ivProductImage)
 

@@ -28,10 +28,9 @@ class PokemonViewDialog : DialogFragment() {
     {
         super.onCreate(savedInstanceState)
         jsonObject = arguments?.getString(KEY)
-
         try{
-            //Getting JSON String converting it to an object as the Pokemodel class is not parcelable
-            //
+            //Getting JSON String converting it to an object as the Pokemodel class is not parcelable,
+            //possible to pass only the strings, but less to change if there are changes in the future
             pokeObject =  jacksonObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false)
                 .readerFor(Pokemon::class.java).readValue<Pokemon>(jsonObject)
             jsonObject= "";

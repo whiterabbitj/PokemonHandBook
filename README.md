@@ -1,3 +1,3 @@
 # PokemonHandBook
 
-A simple application that uses PokeApi to fetch and search fo the desired pokemon
+A simple application that uses PokeApi to fetch and search for the desired pokemon

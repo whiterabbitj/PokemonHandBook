@@ -4,4 +4,7 @@
         android:centerX="0"
         android:startColor="@color/ground1"
         android:endColor="@color/ground2" />
+    <corners android:radius="7dp"/>
+
+
 </shape>

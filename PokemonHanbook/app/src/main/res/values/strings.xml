@@ -4,5 +4,15 @@
 
     <string name="placeHolder">placeHolder</string>
     <string name="loadMore">Load More Pokemon</string>
+    <string name="loading">Catching Pokemon…</string>
     <string name="search">Search</string>
+    <string name="searching">Searching…</string>
+    <string name="Weight">Weight</string>
+    <string name="Height">Height</string>
+    <string name="Species">Species</string>
+    <string name="Gender">Gender</string>
+    <string name="Abilities">Abilities</string>
+    <string name="SearchTip">Enter Few Letters</string>
+    <string name="FunFact">Fun Fact:</string>
+
 </resources>

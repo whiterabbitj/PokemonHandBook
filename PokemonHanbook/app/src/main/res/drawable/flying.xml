@@ -3,5 +3,6 @@
             android:type="sweep"
             android:centerX="0.0"
             android:startColor="@color/flying1"
-            android:endColor="@color/flying2" />
+            android:endColor="@color/flying2"/>
+    <corners android:radius="7dp"/>
 </shape>

@@ -1,59 +1,134 @@
 package com.example.pokemonhanbook.API
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.os.AsyncTask
-import android.os.NetworkOnMainThreadException
-import android.os.StrictMode
-import android.widget.ListView
-import com.example.pokemonhanbook.Adpaters.ItemAdapter
 import com.example.pokemonhanbook.Fragments.MainPageFragment
 import me.sargunvohra.lib.pokekotlin.client.PokeApiClient
+import me.sargunvohra.lib.pokekotlin.model.Characteristic
 import me.sargunvohra.lib.pokekotlin.model.NamedApiResource
 import me.sargunvohra.lib.pokekotlin.model.Pokemon
-import java.lang.Exception
 
 
 class PokemonData {
 
+//    Using https://github.com/PokeAPI/pokekotlin For fetching of the data
 
-//     class populateData (pokemonListDta:ArrayList<Pokemon>, prevItems:Int,totalItems:Int) : ArrayList<Pokemon>?
-//     {
-//         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-//         StrictMode.setThreadPolicy(policy)
-//         try {
-//             val pokeApi = PokeApiClient()
-//             var tempCounter = prevItems
-//             while(tempCounter <= totalItems)
-//             {
-//                 val item : Pokemon = pokeApi.getPokemon(tempCounter)
-//                 pokemonListDta.add(item)
-//                 tempCounter++
-//             }
-//         }
-//         catch (e:NetworkOnMainThreadException){
-//             return null
-//         }
-//         return pokemonListDta
-//     }
-
-
-    class AsynchGetPokemonListData(
-        pokemonListDta: ArrayList<Pokemon>,
+    //asynch task for getting the list data total count of the pokemons is 898 I am getting every 10 of them upon the user click
+    class AsyncGetPokemonListData(
         prevItems: Int,
         totalItems: Int,
         activity: Context,
-        listViewAdapter: ItemAdapter?,
         mainPageFrag: MainPageFragment
     ) :
-        AsyncTask<ArrayList<Pokemon>, Pokemon, ArrayList<Pokemon>>() {
+
+        AsyncTask<Pokemon, Pokemon, ArrayList<Pokemon>>() {
         private var mainFrag: MainPageFragment? = null
         private val pokeApi = PokeApiClient()
         private var tempCounter = prevItems
         private var allItems = totalItems
-        private var pokemonItems = pokemonListDta
+        private var pokemonList:ArrayList<Pokemon> = arrayListOf()
+        private var act = activity
+        var progressDialog: ProgressDialog? = null
 
         override fun onPostExecute(result: ArrayList<Pokemon>) {
-            mainFrag?.updateAdapter(pokemonItems)
+            mainFrag?.updateAdapter(result)
+            mainFrag?.setLoadingAnimation(false,"Load")
+            progressDialog?.dismiss()
+        }
+
+        init {
+            mainFrag = mainPageFrag
+        }
+
+        override fun doInBackground(vararg params: Pokemon): ArrayList<Pokemon>? {
+            var item: Pokemon? = null
+            try {
+                //check if it is smaller than current item counter
+                while (tempCounter <= allItems && tempCounter <= 898) {
+                    //break if it is cancelled
+                    if (isCancelled)
+                        break
+
+                    item = pokeApi.getPokemon(tempCounter)
+                    pokemonList.add(item)
+                    tempCounter++
+                }
+            }  catch (t: Throwable) {
+                t.printStackTrace()
+                return null
+            }
+            return pokemonList
+        }
+        override fun onCancelled() {
+            super.onCancelled()
+            //if cancelled reset the item count
+            mainFrag?.updateCurCountOnCancel(allItems-10)
+            mainFrag?.setLoadingAnimation(false , "Load")
+        }
+
+        override fun onPreExecute() {
+            if (allItems == 10) {
+                progressDialog = ProgressDialog(act);
+                progressDialog!!.setCancelable(false);
+                progressDialog!!.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog!!.setTitle("Catching some Pokemon");
+                progressDialog!!.setMessage("Please Wait...");
+                progressDialog!!.show()
+            }
+        }
+
+        override fun onProgressUpdate(vararg values: Pokemon) {
+            super.onProgressUpdate(*values)
+        }
+    }
+
+    //get all the names available put them in the hashmap to search for later
+    class AsyncGetNames(mainPageFrag: MainPageFragment) :
+
+        AsyncTask<HashMap<String, Int>, NamedApiResource, HashMap<String, Int>>() {
+        private var mainFrag: MainPageFragment? = null
+        private val pokeApi = PokeApiClient()
+        private val returnHash: HashMap<String, Int> = HashMap()
+
+        override fun onPostExecute(result: HashMap<String, Int>?) {
+            mainFrag?.updateNameList(returnHash)
+        }
+
+        init {
+            mainFrag = mainPageFrag
+        }
+
+        override fun doInBackground(vararg params: HashMap<String, Int>): HashMap<String, Int>? {
+            try {
+                val item: List<NamedApiResource> = pokeApi.getPokemonList(0, 898).results
+                item.forEach { x -> publishProgress(x) }
+
+            } catch (t: Throwable) {
+                t.printStackTrace()
+                return null
+            }
+            return returnHash
+
+        }
+
+        override fun onProgressUpdate(vararg values: NamedApiResource) {
+            super.onProgressUpdate(*values)
+            returnHash[values[0].name] = values[0].id
+        }
+    }
+
+    //get a specific pokemon based on Id
+    class AsyncGetSpecificPokemon(mainPageFrag: MainPageFragment, idList: ArrayList<Int?>) :
+        AsyncTask<ArrayList<Pokemon>, Pokemon, ArrayList<Pokemon>>() {
+        private var mainFrag: MainPageFragment? = null
+        private val pokeApi = PokeApiClient()
+        private val pokeList = arrayListOf<Pokemon>()
+        private val idListData = idList
+
+        override fun onPostExecute(result: ArrayList<Pokemon>) {
+            mainFrag?.updateAdapter(result)
+            mainFrag?.setLoadingAnimation(false,"Search")
         }
 
         init {
@@ -62,56 +137,62 @@ class PokemonData {
 
         override fun doInBackground(vararg params: ArrayList<Pokemon>): ArrayList<Pokemon>? {
             try {
-                while (tempCounter <= allItems) {
-                    val item: Pokemon = pokeApi.getPokemon(tempCounter)
-                    tempCounter++
-                    publishProgress(item)
+                var item:Pokemon
+                idListData.forEach { x ->
+                    run {
+                        item = x?.let { pokeApi.getPokemon(it) }!!
+                        pokeList.add(item)
+                        publishProgress(item)
+                    }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            }  catch (t: Throwable) {
+                t.printStackTrace()
                 return null
             }
-            return pokemonItems
+            return pokeList
 
+        }
+        override fun onPreExecute() {
+//                mainFrag?.setLoadingAnimation(true)
         }
 
         override fun onProgressUpdate(vararg values: Pokemon) {
             super.onProgressUpdate(*values)
-            pokemonItems.add(values[0])
-            mainFrag?.updateAdapter(pokemonItems)
-
         }
-
-
-    }
-    fun getAllNames () : HashMap<String,Int >?
-    {
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
-        val returnHash : HashMap<String,Int > = HashMap()
-        try {
-            val pokeApi = PokeApiClient()
-                val item : List<NamedApiResource> = pokeApi.getPokemonList(0 , 889).results
-                item.forEach { x ->  returnHash.put(x.name , x.id)}
-        }
-        catch (e:NetworkOnMainThreadException){
-            return null
-        }
-        return returnHash
     }
 
-    fun getSpecificPokemon(_id:Int) : Pokemon? {
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
-        val pokeApi = PokeApiClient()
-        val returnVal = pokeApi.getPokemon(_id)
-//        try {
-//            val pokeApi = PokeApiClient()
-//            val returnVal = pokeApi.getPokemon(_id)
-//        }
-//        catch (e:NetworkOnMainThreadException){
-//        }
-        return returnVal
+    //get pokemon charesteristics
+    class GetSpecificCharacteristic(id: Int) :
+        AsyncTask<Characteristic,Characteristic, String>() {
+        private val pokeApi = PokeApiClient()
+        private var item : Characteristic? = null
+        private val idPokemon = id
 
+
+        override fun onPostExecute(result: String) {
+            super.onPostExecute(result)
+        }
+        init {
+        }
+        override fun doInBackground(vararg params: Characteristic):String? {
+            try {
+                item = pokeApi.getCharacteristic(idPokemon)
+            } catch (t: Throwable) {
+                t.printStackTrace()
+                return "Nothing is available"
+            }
+            return item!!.descriptions[2].description
+        }
+
+        override fun onPreExecute() {
+        }
+
+        override fun onProgressUpdate(vararg values: Characteristic) {
+            super.onProgressUpdate(*values)
+        }
     }
+
+
 }
+
+

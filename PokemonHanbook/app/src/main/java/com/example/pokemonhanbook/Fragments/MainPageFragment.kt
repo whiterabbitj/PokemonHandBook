@@ -19,34 +19,31 @@ import com.example.pokemonhanbook.Dialog.PokemonViewDialog
 import com.example.pokemonhanbook.R
 import com.fasterxml.jackson.databind.ObjectMapper
 import me.sargunvohra.lib.pokekotlin.model.Pokemon
+import java.util.*
 
 
-class MainPageFragment : Fragment(), ItemAdapter.IPokemonSelected {
+class MainPageFragment : Fragment() {
 
+    // GLOBAL VARIABLES
+    private val INCREMENT = 10   // USED FOR GETTING POKEMON DATA
+    private var currList = arrayListOf<Pokemon>() // MAIN LIST USED TO POPULATE THE ADAPTER
+    private var allNames = HashMap<String, Int>() // MAIN LIST THAT KEEPS ALL THE POKEMON NAMES
+    private var listViewAdapter: ItemAdapter? = null // MAIN LIST VIEW ADAPTER
+    private lateinit var listView: ListView // MAIN LIST VIEW
+    private var state: Parcelable? = null // STATE USED FOR THE LIST VIEW POSITION
+    private lateinit var btnLoadMore: AppCompatButton
+    private lateinit var btnSearch: AppCompatButton
+    private lateinit var asyncTask: PokemonData.AsyncGetPokemonListData
+    private var currCount: Int = INCREMENT
 
-    private val ICREMENTCOUNT = 10
-    override fun onPokemonSelected(fso: Pokemon) {
-
-
-    }
-
-    private var currList = arrayListOf<Pokemon>()
-    private var allNames = HashMap<String, Int>()
-    private var idPkemon = arrayListOf<Int?>()
-    private var currCount: Int = ICREMENTCOUNT
-    private val pokeData = PokemonData()
-    private var listViewAdapter: ItemAdapter? = null
-    private lateinit var listView: ListView
-    var state: Parcelable? = null
-    var pokemonListAsynch: PokemonData.AsynchGetPokemonListData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        pokemonListAsynch = PokemonData.AsynchGetPokemonListData(
-            currList, 1, ICREMENTCOUNT,
-            context!!, listViewAdapter, this
-        ).execute() as PokemonData.AsynchGetPokemonListData
-        allNames = pokeData.getAllNames()!!
+        // GET THE POKEMON DATA FROM THE API
+        asyncTask = PokemonData.AsyncGetPokemonListData(1, INCREMENT, context!!, this)
+        asyncTask.execute()
+        //POPULATE THE LISTVIEW ADAPTER
+        listViewAdapter = ItemAdapter(this.requireActivity(), currList)
 
     }
 
@@ -56,51 +53,106 @@ class MainPageFragment : Fragment(), ItemAdapter.IPokemonSelected {
     ): View? {
         val root = inflater.inflate(R.layout.pokemon_listview, container, false)
 
-        listView = root.findViewById<ListView>(R.id.lw_pokemonList)
-        listView.setOnItemClickListener { parent, view, position, id ->
+         // KEEPS THE COUNT OF THE NEXT ITEMS TO BE FETCHED
+        val pokemonIds = arrayListOf<Int?>() // LIST OF INT OF THE MATCHING POKEMON IDS
+        var tempList = arrayListOf<Pokemon>() // TEMPORARY LIST THAT STORES THE FETCHED LIST OF THE LISTVIEW ADAPTER ONCE THE SEARCH OCCURS
 
-            val mapper = ObjectMapper()
-            val jsonToPass: String = mapper.writeValueAsString(listView.getItemAtPosition(position))
+        // get all names of possible pokemons
+        if(allNames.size==0)
+            PokemonData.AsyncGetNames(this).execute()
+
+
+        //Views
+        val editTextSearch = root.findViewById<AppCompatEditText>(R.id.editTextSearch)
+        val btnDeleteText = root.findViewById<AppCompatImageButton>(R.id.btnDeleteText)
+        btnSearch = root.findViewById(R.id.btnSearch)
+
+        //SET THE MAIN LIST VIEW ADAPTER
+        listView = root.findViewById(R.id.lw_pokemonList)
+        listView.adapter = listViewAdapter
+
+        // List View Item CLick, Pass the Object AS Json as The Pokemon Class Object does not support parcelable
+        // Use Jackson API to serialize the object found here  - https://github.com/FasterXML/jackson
+        listView.setOnItemClickListener { _, _, position, _ ->
+            val mapper = ObjectMapper() //intit the object mapper
+            val jsonToPass: String = mapper.writeValueAsString(listView.getItemAtPosition(position)) // parse to json String of the specific object
+            // Pass Arguments into a bundle and show the dialog fragment
             val pokemonViewDialog = PokemonViewDialog()
             val args = Bundle()
-            args.putString("jsonPokemonObject", jsonToPass);
-            pokemonViewDialog.setArguments(args)
+            args.putString("jsonPokemonObject", jsonToPass)
+            pokemonViewDialog.arguments = args
             val fm = this.fragmentManager
             if (fm != null) {
                 pokemonViewDialog.show(fm, "PokemonViewDialog")
             }
         }
 
-        val btnLoadMore = root.findViewById<AppCompatButton>(R.id.btnLoadMorePokemon)
+
+
+        btnLoadMore= root.findViewById(R.id.btnLoadMorePokemon)
         btnLoadMore.setOnClickListener {
+            // Increment the precious counter and the current counter accordingly
             val previousCount: Int = currCount + 1
-            currCount += ICREMENTCOUNT
-            pokemonListAsynch = PokemonData.AsynchGetPokemonListData(
-                currList, previousCount, currCount,
-                context!!, listViewAdapter, this
-            ).execute() as PokemonData.AsynchGetPokemonListData
+            currCount += INCREMENT
+            // Fetch More Data With the Updated VAlues
+            asyncTask = PokemonData.AsyncGetPokemonListData(previousCount, currCount, context!!, this)
+            asyncTask.execute()
+            setLoadingAnimation(true , "Load")
         }
 
+        editTextSearch.doOnTextChanged { _, _, _, _ ->
+            // check if not null
+            if (editTextSearch.text?.isNotEmpty() == true){
+                //if its is greater 3 chars hide/ show other control
+                if(editTextSearch.text!!.length >= 3)
+                     btnDeleteText.visibility = View.VISIBLE
 
-        val editTextSearch = root.findViewById<AppCompatEditText>(R.id.editTextSearch)
-        val btnDeleteText = root.findViewById<AppCompatImageButton>(R.id.btnDeleteText)
-        val btnSearch = root.findViewById<AppCompatButton>(R.id.btnSearch)
-
-        editTextSearch.doOnTextChanged { text, start, before, count ->
-            if (editTextSearch.text?.isNotEmpty() == true)
-                btnDeleteText.visibility = View.VISIBLE
-            else
+            }
+            else {
                 btnDeleteText.visibility = View.GONE
+                btnLoadMore.visibility = View.VISIBLE
+                //update adapter as the user has deleted their search phrase
+                if(tempList.size > 0){
+                    currList.clear()
+                    updateAdapter(tempList)
+                }
+
+            }
         }
 
+        // search functionality - just using contains quite simple
         btnSearch.setOnClickListener {
             if (editTextSearch.text != null) {
                 val typedSearchPhrase: String = editTextSearch.text.toString()
-                idPkemon.clear()
+                pokemonIds.clear()
                 if (typedSearchPhrase.length >= 3) {
+                    //gets searched phrase
+                    btnLoadMore.visibility = View.GONE
                     for (hashMapVal in allNames)
-                        if (hashMapVal.key.contains(typedSearchPhrase) || hashMapVal.key.equals(typedSearchPhrase))
-                            idPkemon.add(allNames.getValue(hashMapVal.key))
+                        //get all the names from the preloaded list
+                        if (hashMapVal.key.contains(typedSearchPhrase))
+                            //ad the ids
+                            pokemonIds.add(allNames.getValue(hashMapVal.key))
+
+                    if (pokemonIds.size > 0) {
+                        //cancel if the task of loading extra pokemon is running
+                        asyncTask.cancel(true)
+                        setLoadingAnimation(true, "Search")
+                        if (currList.size > 0) {
+                            //put the values in a tremporary list
+                            if (tempList.size == 0)
+                                tempList = ArrayList(currList)
+                            currList.clear()
+                        }
+                        // if the task is canceled tun another task - the canceled taskl causes listview items to be updated
+                        if (asyncTask.isCancelled)
+                            //get the specific pokemon by the ID
+                            PokemonData.AsyncGetSpecificPokemon(this, pokemonIds).execute()
+                    } else {
+                        val toast = Toast.makeText(context, "Sorry Nothing Was Found", Toast.LENGTH_SHORT)
+                        toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 0)
+                        toast.show()
+                    }
                 } else {
                     val toast = Toast.makeText(
                         context,
@@ -110,40 +162,66 @@ class MainPageFragment : Fragment(), ItemAdapter.IPokemonSelected {
                     toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 0)
                     toast.show()
                 }
-
-                if (idPkemon.size > 0) {
-                    currList.clear()
-                    idPkemon.forEach { x ->
-                        if (x != null) {
-                            pokeData.getSpecificPokemon(x)?.let { currList.add(it) }
-                        }
-                    }
-                    listViewAdapter!!.notifyDataSetChanged()
-                } else {
-                    val toast = Toast.makeText(context, "Sorry Nothing Was Found", Toast.LENGTH_SHORT)
-                    toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 0)
-                    toast.show()
-                }
             }
-        }
-//
 
+        }
+        // delete Search criteria update the item adapter
         btnDeleteText.setOnClickListener {
+            btnLoadMore.visibility = View.VISIBLE
             editTextSearch.setText("")
             btnDeleteText.visibility = View.GONE
+            if(tempList.size > 0){
+                currList.clear()
+                updateAdapter(tempList)
+            }
         }
-
         return root
     }
 
-    public fun updateAdapter(pokemons: ArrayList<Pokemon>) {
+    // generic function that updated the listview item adapter keep the current scroll position as well
+    fun updateAdapter(pokemon: ArrayList<Pokemon>) {
+        pokemon.forEach { x-> currList.add(x) }
         state = listView.onSaveInstanceState()
-        listViewAdapter = ItemAdapter(this.requireActivity(), pokemons)
-        listView.adapter = listViewAdapter
         listViewAdapter?.notifyDataSetChanged()
         if (state != null) {
-            listView.onRestoreInstanceState(state);
+            listView.onRestoreInstanceState(state)
         }
+    }
+
+    // updates all fetched from the APi Search
+    fun updateNameList(params: HashMap<String,Int>){
+        allNames = params
+    }
+
+    // helper function to update the buttons to notiufy about the process
+    fun setLoadingAnimation(show:Boolean, type:String) {
+        var tempButton: AppCompatButton? = null
+        when (type) {
+            "Search" ->
+                if (show) {
+                    btnSearch.isClickable = true
+                    btnSearch.background = resources.getDrawable(R.drawable.pressed)
+                    btnSearch.text = getString(R.string.searching)
+                } else {
+                    btnSearch.isClickable = true
+                    btnSearch.background = resources.getDrawable(R.drawable.un_pressed)
+                    btnSearch.text = getString(R.string.search)
+                }
+            "Load" ->
+                if (show) {
+                    btnLoadMore.isClickable = true
+                    btnLoadMore.background = resources.getDrawable(R.drawable.pressed)
+                    btnLoadMore.text = getString(R.string.loading)
+                } else {
+                    btnLoadMore.isClickable = true
+                    btnLoadMore.background = resources.getDrawable(R.drawable.un_pressed)
+                    btnLoadMore.text = getString(R.string.loadMore)
+                }
+        }
+    }
+
+    fun updateCurCountOnCancel(newCount:Int){
+        currCount = newCount
     }
 
 }

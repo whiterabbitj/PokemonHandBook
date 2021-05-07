@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                       xmlns:app="http://schemas.android.com/apk/res-auto"
-                                       xmlns:tools="http://schemas.android.com/tools"
-                                       android:id="@+id/constraintLayout"
-                                       android:layout_width="match_parent"
-                                       android:layout_height="match_parent"
-                                       android:background="@color/colorPrimary"
-                                       android:fillViewport="true"
-                                       android:scrollbars="none"
-                                       tools:context="MainViewFragment">
+                                                     xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                     xmlns:tools="http://schemas.android.com/tools"
+                                                     android:id="@+id/constraintLayout"
+                                                     android:layout_width="match_parent"
+                                                     android:layout_height="match_parent"
+                                                     android:background="@color/colorPrimary"
+                                                     android:fillViewport="true"
+                                                     android:scrollbars="none"
+                                                     tools:context="MainViewFragment">
 
     <androidx.appcompat.widget.LinearLayoutCompat android:layout_width="match_parent"
                                                   android:layout_height="wrap_content"
@@ -16,41 +16,38 @@
                                                   android:layout_marginTop="50dp">
 
 
-
-    <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
-
-
-
-                <androidx.appcompat.widget.AppCompatEditText android:layout_width="wrap_content"
-                                                             android:layout_height="30dp"
-                                                             android:width="200dp"
-                                                             android:textSize="13sp"
-                                                             android:paddingStart="5dp"
-                                                             android:background="@drawable/rounded_editext"
-                                                             android:layout_gravity="center"
-                                                             android:layout_marginLeft="15dp"
-                                                             android:id="@+id/editTextSearch"
-                                                             android:paddingLeft="5dp"
-                                                             android:layout_marginStart="15dp"/>
+        <RelativeLayout android:layout_width="wrap_content" android:layout_marginStart="25dp"
+                        android:layout_height="wrap_content">
 
 
-                 <androidx.appcompat.widget.AppCompatImageButton
-                                                             android:id="@+id/btnDeleteText"
-                                                             android:layout_width="20dp"
-                                                             android:background="@null"
-                                                             android:src="@drawable/cancel"
-                                                             android:layout_alignRight="@+id/editTextSearch"
-                                                             android:layout_gravity="center_vertical"
-                                                             android:layout_height="20dp"
-                                                             android:layout_marginRight="8dp"
-                                                             android:visibility="gone"
-                                                             android:layout_marginTop="5dp" android:layout_marginEnd="8dp"/>
-
-    </RelativeLayout>
+            <androidx.appcompat.widget.AppCompatEditText android:layout_width="wrap_content"
+                                                         android:layout_height="30dp"
+                                                         android:hint="@string/SearchTip"
+                                                         android:width="130dp"
+                                                         android:textSize="13sp"
+                                                         android:paddingStart="5dp"
+                                                         android:layout_margin="3dp"
+                                                         android:background="@drawable/rounded_editext"
+                                                         android:layout_gravity="center"
+                                                         android:id="@+id/editTextSearch"
+            />
 
 
-        <androidx.appcompat.widget.AppCompatButton android:layout_width="70dp"
-                                                   android:layout_marginLeft="15dp"
+            <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/btnDeleteText"
+                    android:layout_width="15dp"
+                    android:background="@null"
+                    android:src="@drawable/cancel"
+                    android:layout_alignEnd="@+id/editTextSearch"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="15dp"
+                    android:visibility="gone"
+                    android:layout_marginTop="11dp" android:layout_marginEnd="8dp"/>
+
+        </RelativeLayout>
+
+
+        <androidx.appcompat.widget.AppCompatButton android:layout_width="85dp"
                                                    android:id="@+id/btnSearch"
                                                    android:background="@drawable/button"
                                                    android:layout_height="30dp"
@@ -62,7 +59,6 @@
 
 
     </androidx.appcompat.widget.LinearLayoutCompat>
-
 
 
     <ListView
@@ -78,19 +74,18 @@
             android:scrollbars="none"
     />
 
-                    <androidx.appcompat.widget.AppCompatButton
-                            android:layout_width="200dp"
-                            android:id="@+id/btnLoadMorePokemon"
-                            android:background="@drawable/button"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center_horizontal|bottom"
-                            android:textSize="17sp"
-                            android:layout_marginTop= "16dp"
-                            android:layout_marginBottom="16dp"
-                            android:text="@string/loadMore"
-                            android:textColor="@color/white"
-                    />
 
-
+    <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="200dp"
+            android:id="@+id/btnLoadMorePokemon"
+            android:background="@drawable/button"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:textSize="17sp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/loadMore"
+            android:textColor="@color/white"
+    />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

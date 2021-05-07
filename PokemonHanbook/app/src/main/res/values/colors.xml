@@ -3,11 +3,13 @@
     <color name="colorPrimary">#E3E4DB</color>
     <color name="colorSecondary">#CAD5DA</color>
     <color name="colorThird">#AEA4BF</color>
+    <color name="colorThirdDark">#706486</color>
     <color name="colorPrimaryDark">#3B252C</color>
     <color name="colorAccent">#1FC6B6</color>
     <color name="white">#FFFFFFFF</color>
     <color name="lightGrey">#C8C7C7</color>
     <color name="darkGrey">#6E6C6C</color>
+    <color name="darkishGrey">#949494</color>
     <color name="colorDefault">#EEEEEE</color>
 
 

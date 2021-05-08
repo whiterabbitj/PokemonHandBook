@@ -49,10 +49,11 @@ class PokemonData {
                     //break if it is cancelled
                     if (isCancelled)
                         break
-
                     item = pokeApi.getPokemon(tempCounter)
+                    publishProgress(item)
                     pokemonList.add(item)
                     tempCounter++
+
                 }
             }  catch (t: Throwable) {
                 t.printStackTrace()
@@ -136,15 +137,16 @@ class PokemonData {
         }
 
         override fun doInBackground(vararg params: ArrayList<Pokemon>): ArrayList<Pokemon>? {
+            var item: Pokemon? = null
             try {
-                var item:Pokemon
-                idListData.forEach { x ->
-                    run {
-                        item = x?.let { pokeApi.getPokemon(it) }!!
-                        pokeList.add(item)
-                        publishProgress(item)
-                    }
+                for(id in idListData){
+                    if (isCancelled)
+                        break
+                    item = pokeApi.getPokemon(id!!)
+                    pokeList.add(item)
+                    publishProgress(item)
                 }
+
             }  catch (t: Throwable) {
                 t.printStackTrace()
                 return null
@@ -153,7 +155,11 @@ class PokemonData {
 
         }
         override fun onPreExecute() {
-//                mainFrag?.setLoadingAnimation(true)
+        }
+
+        override fun onCancelled() {
+            super.onCancelled()
+
         }
 
         override fun onProgressUpdate(vararg values: Pokemon) {
@@ -161,33 +167,33 @@ class PokemonData {
         }
     }
 
-    //get pokemon charesteristics
-    class GetSpecificCharacteristic(id: Int) :
-        AsyncTask<Characteristic,Characteristic, String>() {
+    //get pokemon characteristics
+    class GetSpecificCharacteristic(id: Int,mainPageFrag:MainPageFragment) :
+        AsyncTask<Characteristic,String, String>() {
         private val pokeApi = PokeApiClient()
         private var item : Characteristic? = null
         private val idPokemon = id
-
+        private val mainFrag:MainPageFragment = mainPageFrag
 
         override fun onPostExecute(result: String) {
             super.onPostExecute(result)
+            mainFrag.updateCharAndShowdialog(result)
         }
-        init {
-        }
-        override fun doInBackground(vararg params: Characteristic):String? {
+        override fun doInBackground(vararg params: Characteristic):String {
             try {
                 item = pokeApi.getCharacteristic(idPokemon)
+                publishProgress(item!!.descriptions[2].description)
             } catch (t: Throwable) {
                 t.printStackTrace()
-                return "Nothing is available"
+                return "Not Available"
             }
             return item!!.descriptions[2].description
         }
-
         override fun onPreExecute() {
+            super.onPreExecute()
         }
 
-        override fun onProgressUpdate(vararg values: Characteristic) {
+        override fun onProgressUpdate(vararg values: String) {
             super.onProgressUpdate(*values)
         }
     }

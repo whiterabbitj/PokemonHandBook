@@ -17,7 +17,7 @@ import com.example.pokemonhanbook.API.PokemonData
 import com.example.pokemonhanbook.Adpaters.ItemAdapter
 import com.example.pokemonhanbook.Dialog.PokemonViewDialog
 import com.example.pokemonhanbook.R
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import me.sargunvohra.lib.pokekotlin.model.Pokemon
 import java.util.*
 
@@ -35,6 +35,8 @@ class MainPageFragment : Fragment() {
     private lateinit var btnSearch: AppCompatButton
     private lateinit var asyncTask: PokemonData.AsyncGetPokemonListData
     private var currCount: Int = INCREMENT
+    var charecteristics: String = "Not Available"
+    var jsonToPass:String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +46,6 @@ class MainPageFragment : Fragment() {
         asyncTask.execute()
         //POPULATE THE LISTVIEW ADAPTER
         listViewAdapter = ItemAdapter(this.requireActivity(), currList)
-
     }
 
     override fun onCreateView(
@@ -74,17 +75,11 @@ class MainPageFragment : Fragment() {
         // List View Item CLick, Pass the Object AS Json as The Pokemon Class Object does not support parcelable
         // Use Jackson API to serialize the object found here  - https://github.com/FasterXML/jackson
         listView.setOnItemClickListener { _, _, position, _ ->
-            val mapper = ObjectMapper() //intit the object mapper
-            val jsonToPass: String = mapper.writeValueAsString(listView.getItemAtPosition(position)) // parse to json String of the specific object
-            // Pass Arguments into a bundle and show the dialog fragment
-            val pokemonViewDialog = PokemonViewDialog()
-            val args = Bundle()
-            args.putString("jsonPokemonObject", jsonToPass)
-            pokemonViewDialog.arguments = args
-            val fm = this.fragmentManager
-            if (fm != null) {
-                pokemonViewDialog.show(fm, "PokemonViewDialog")
-            }
+            asyncTask.cancel(true)
+            jsonToPass = jacksonObjectMapper().writeValueAsString(listView.getItemAtPosition(position)) // parse to json String of the specific object
+            val charecteristicsTask = PokemonData.GetSpecificCharacteristic(position+1, this)
+            if(asyncTask.isCancelled)
+                charecteristicsTask.execute()
         }
 
 
@@ -143,11 +138,14 @@ class MainPageFragment : Fragment() {
                             if (tempList.size == 0)
                                 tempList = ArrayList(currList)
                             currList.clear()
+                            listViewAdapter?.notifyDataSetChanged()
                         }
                         // if the task is canceled tun another task - the canceled taskl causes listview items to be updated
-                        if (asyncTask.isCancelled)
+                        if (asyncTask.isCancelled){
                             //get the specific pokemon by the ID
                             PokemonData.AsyncGetSpecificPokemon(this, pokemonIds).execute()
+
+                        }
                     } else {
                         val toast = Toast.makeText(context, "Sorry Nothing Was Found", Toast.LENGTH_SHORT)
                         toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 0)
@@ -222,6 +220,18 @@ class MainPageFragment : Fragment() {
 
     fun updateCurCountOnCancel(newCount:Int){
         currCount = newCount
+    }
+    fun updateCharAndShowdialog(currChar:String){
+        charecteristics = currChar
+        val pokemonViewDialog = PokemonViewDialog()
+        val args = Bundle()
+        args.putString("jsonPokemonObject", jsonToPass)
+        args.putString("characteristics", charecteristics)
+        pokemonViewDialog.arguments = args
+        val fm = this.fragmentManager
+        if (fm != null) {
+            pokemonViewDialog.show(fm, "PokemonViewDialog")
+        }
     }
 
 }

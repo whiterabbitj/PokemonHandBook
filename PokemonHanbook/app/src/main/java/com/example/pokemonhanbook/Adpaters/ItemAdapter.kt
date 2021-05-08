@@ -33,13 +33,6 @@ class ItemAdapter(val context: Context, val itemList: ArrayList<Pokemon>) : Base
             view = convertView
             vh = view.tag as ViewHolder
         }
-//
-        val myOptions = RequestOptions().centerCrop()
-        Glide.with(context)
-            .asBitmap()
-            .apply(myOptions)
-            .load(itemList[position].sprites.frontDefault)
-            .into(vh.ivProductImage)
 
         //POPULATE VIEWS ACCORDINGLY HERE SETTING UP THE TEXTVIEWS
         vh.llTypes.removeAllViews()
@@ -72,6 +65,13 @@ class ItemAdapter(val context: Context, val itemList: ArrayList<Pokemon>) : Base
                 itemList[position].name[0].toUpperCase(),
                 itemList[position].name.substring(1)
             )
+
+            val myOptions = RequestOptions().centerCrop()
+            Glide.with(context)
+                .asBitmap()
+                .apply(myOptions)
+                .load(itemList[position].sprites.frontDefault)
+                .into(vh.ivProductImage)
 
         }
 

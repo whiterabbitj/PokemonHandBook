@@ -1,6 +1,5 @@
 package com.example.pokemonhanbook.Dialog
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -10,7 +9,6 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
-import com.example.pokemonhanbook.API.PokemonData
 import com.example.pokemonhanbook.R
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -22,11 +20,12 @@ class PokemonViewDialog : DialogFragment() {
 
     private var jsonObject: String? = null
     private var pokeObject: Pokemon? = null
-    private var characteristic: String = "Not Available"
+    private var characteristic: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        jsonObject = arguments?.getString(KEY)
+        jsonObject = arguments?.getString(jsonObj)
+        characteristic = arguments?.getString(charString)
         try {
             //Getting JSON String converting it to an object as the Pokemodel class is not parcelable,
             //possible to pass only the strings, but less to change if there are changes in the future
@@ -36,8 +35,6 @@ class PokemonViewDialog : DialogFragment() {
             t.printStackTrace()
         } finally {
             jsonObject = null
-            //getting some interesting data not really asynch though
-            characteristic = PokemonData.GetSpecificCharacteristic(pokeObject?.id!!).execute().get()
         }
 
 
@@ -101,15 +98,14 @@ class PokemonViewDialog : DialogFragment() {
             textViewAbility.setPadding(3, 3, 3, 3)
             textViewAbility.setTextColor(Color.WHITE)
             textViewAbility.gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
-            context?.resources?.let {
                 textViewAbility.setBackgroundResource(
-                    it.getIdentifier(
+                    context!!.resources.getIdentifier(
                         x.type.name,
                         "drawable",
-                        context?.packageName
+                        context!!.packageName
                     )
                 )
-            }
+
             textViewAbility.text = String.format("%s%s", x.type.name[0].toUpperCase(), x.type.name.substring(1))
             view.findViewById<LinearLayoutCompat>(R.id.llTypes).addView(textViewAbility)
         }
@@ -119,13 +115,15 @@ class PokemonViewDialog : DialogFragment() {
 
 
     companion object {
-        private const val KEY = "jsonPokemonObject"
+        private const val jsonObj = "jsonPokemonObject"
+        private const val charString = "characteristics"
 
         @JvmStatic
-        fun newInstance(json: String): PokemonViewDialog {
+        fun newInstance(json: String,charString:String ): PokemonViewDialog {
             return PokemonViewDialog().apply {
                 arguments = Bundle().apply {
-                    putString(KEY, json)
+                    putString(jsonObj, json)
+                    putString(jsonObj, charString)
                 }
             }
         }

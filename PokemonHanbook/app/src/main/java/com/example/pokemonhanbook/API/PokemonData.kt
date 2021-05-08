@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.os.AsyncTask
 import com.example.pokemonhanbook.Fragments.MainPageFragment
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import me.sargunvohra.lib.pokekotlin.client.PokeApiClient
 import me.sargunvohra.lib.pokekotlin.model.Characteristic
 import me.sargunvohra.lib.pokekotlin.model.NamedApiResource
@@ -73,7 +74,7 @@ class PokemonData {
                 progressDialog = ProgressDialog(act);
                 progressDialog!!.setCancelable(false);
                 progressDialog!!.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog!!.setTitle("Catching some Pokemon");
+                progressDialog!!.setTitle("Catching Some Pokemon");
                 progressDialog!!.setMessage("Please Wait...");
                 progressDialog!!.show()
             }
@@ -167,27 +168,61 @@ class PokemonData {
         }
     }
 
-    //get pokemon characteristics
-    class GetSpecificCharacteristic(id: Int,mainPageFrag:MainPageFragment) :
+    //get pokemon characteristics fetchen on listview click
+    class GetSpecificCharacteristic(obj: Pokemon,mainPageFrag:MainPageFragment) :
         AsyncTask<Characteristic,String, String>() {
         private val pokeApi = PokeApiClient()
         private var item : Characteristic? = null
-        private val idPokemon = id
+        private val pokemon:Pokemon = obj
         private val mainFrag:MainPageFragment = mainPageFrag
+        private var stringJson: String =""
 
         override fun onPostExecute(result: String) {
             super.onPostExecute(result)
-            mainFrag.updateCharAndShowdialog(result)
+            mainFrag.updateCharAndShowdialog(result,stringJson)
         }
         override fun doInBackground(vararg params: Characteristic):String {
             try {
-                item = pokeApi.getCharacteristic(idPokemon)
+                item = pokeApi.getCharacteristic(pokemon.id)
                 publishProgress(item!!.descriptions[2].description)
             } catch (t: Throwable) {
                 t.printStackTrace()
                 return "Not Available"
             }
             return item!!.descriptions[2].description
+        }
+        override fun onPreExecute() {
+            GetJsonString(pokemon,this).execute()
+            super.onPreExecute()
+        }
+        override fun onProgressUpdate(vararg values: String) {
+            super.onProgressUpdate(*values)
+        }
+        public fun updateString(string:String){
+            stringJson=string
+        }
+    }
+
+    //Maybe a bit to much bu mapping Json at the same time as fetching the data from API
+    class GetJsonString(obj: Pokemon, asynchTask:GetSpecificCharacteristic ) :
+        AsyncTask<Characteristic,String, String>() {
+        private val pokemon:Pokemon = obj
+        private val asyParent : GetSpecificCharacteristic = asynchTask
+        private var string:String = ""
+
+        override fun onPostExecute(result: String) {
+            asyParent.updateString(result)
+            super.onPostExecute(result)
+        }
+        override fun doInBackground(vararg params: Characteristic):String {
+            try{
+                string = jacksonObjectMapper().writeValueAsString(pokemon)
+            }
+            catch (t: Throwable) {
+                t.printStackTrace()
+                return ""
+            }
+            return string
         }
         override fun onPreExecute() {
             super.onPreExecute()

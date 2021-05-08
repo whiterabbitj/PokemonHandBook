@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity()
             {
                 builder.setTitle("Error No Wifi Detected!")
                 builder.setMessage("Please Come Back Later")
-                builder.setPositiveButton("OK") { dialog: DialogInterface?, whichButton: Int ->
+                builder.setPositiveButton("Ok") { dialog: DialogInterface?, whichButton: Int ->
                     this@MainActivity.finish();
                     System.exit(0)
                 }

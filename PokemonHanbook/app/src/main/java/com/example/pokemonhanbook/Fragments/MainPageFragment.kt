@@ -1,7 +1,6 @@
 package com.example.pokemonhanbook.Fragments
 
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,6 @@ import com.example.pokemonhanbook.API.PokemonData
 import com.example.pokemonhanbook.Adpaters.ItemAdapter
 import com.example.pokemonhanbook.Dialog.PokemonViewDialog
 import com.example.pokemonhanbook.R
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import me.sargunvohra.lib.pokekotlin.model.Pokemon
 import java.util.*
 
@@ -30,13 +28,10 @@ class MainPageFragment : Fragment() {
     private var allNames = HashMap<String, Int>() // MAIN LIST THAT KEEPS ALL THE POKEMON NAMES
     private var listViewAdapter: ItemAdapter? = null // MAIN LIST VIEW ADAPTER
     private lateinit var listView: ListView // MAIN LIST VIEW
-    private var state: Parcelable? = null // STATE USED FOR THE LIST VIEW POSITION
     private lateinit var btnLoadMore: AppCompatButton
     private lateinit var btnSearch: AppCompatButton
     private lateinit var asyncTask: PokemonData.AsyncGetPokemonListData
     private var currCount: Int = INCREMENT
-    var charecteristics: String = "Not Available"
-    var jsonToPass:String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,13 +71,10 @@ class MainPageFragment : Fragment() {
         // Use Jackson API to serialize the object found here  - https://github.com/FasterXML/jackson
         listView.setOnItemClickListener { _, _, position, _ ->
             asyncTask.cancel(true)
-            jsonToPass = jacksonObjectMapper().writeValueAsString(listView.getItemAtPosition(position)) // parse to json String of the specific object
-            val charecteristicsTask = PokemonData.GetSpecificCharacteristic(position+1, this)
+            val tempDataObj:Pokemon = listView.getItemAtPosition(position) as Pokemon
             if(asyncTask.isCancelled)
-                charecteristicsTask.execute()
+                PokemonData.GetSpecificCharacteristic(tempDataObj, this).execute()
         }
-
-
 
         btnLoadMore= root.findViewById(R.id.btnLoadMorePokemon)
         btnLoadMore.setOnClickListener {
@@ -179,7 +171,7 @@ class MainPageFragment : Fragment() {
     // generic function that updated the listview item adapter keep the current scroll position as well
     fun updateAdapter(pokemon: ArrayList<Pokemon>) {
         pokemon.forEach { x-> currList.add(x) }
-        state = listView.onSaveInstanceState()
+        val state = listView.onSaveInstanceState()
         listViewAdapter?.notifyDataSetChanged()
         if (state != null) {
             listView.onRestoreInstanceState(state)
@@ -221,13 +213,12 @@ class MainPageFragment : Fragment() {
     fun updateCurCountOnCancel(newCount:Int){
         currCount = newCount
     }
-    fun updateCharAndShowdialog(currChar:String){
+    fun updateCharAndShowdialog(currChar:String, json:String){
         //Show the Dialog prompet from the asynch task of fetching charecteristics
-        charecteristics = currChar
         val pokemonViewDialog = PokemonViewDialog()
         val args = Bundle()
-        args.putString("jsonPokemonObject", jsonToPass)
-        args.putString("characteristics", charecteristics)
+        args.putString("jsonPokemonObject", json)
+        args.putString("characteristics", currChar)
         pokemonViewDialog.arguments = args
         val fm = this.fragmentManager
         if (fm != null) {

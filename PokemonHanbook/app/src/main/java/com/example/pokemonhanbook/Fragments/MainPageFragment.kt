@@ -222,6 +222,7 @@ class MainPageFragment : Fragment() {
         currCount = newCount
     }
     fun updateCharAndShowdialog(currChar:String){
+        //Show the Dialog prompet from the asynch task of fetching charecteristics
         charecteristics = currChar
         val pokemonViewDialog = PokemonViewDialog()
         val args = Bundle()

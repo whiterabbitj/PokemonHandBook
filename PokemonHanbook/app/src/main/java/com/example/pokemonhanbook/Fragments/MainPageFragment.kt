@@ -125,19 +125,19 @@ class MainPageFragment : Fragment() {
                         //cancel if the task of loading extra pokemon is running
                         asyncTask.cancel(true)
                         setLoadingAnimation(true, "Search")
+                        if (asyncTask.isCancelled){
+                            //get the specific pokemon by the ID
+                            // if the task is canceled tun another task - the canceled taskl causes listview items to be updated
+                            PokemonData.AsyncGetSpecificPokemon(this, pokemonIds).execute()
+                        }
                         if (currList.size > 0) {
                             //put the values in a tremporary list
                             if (tempList.size == 0)
                                 tempList = ArrayList(currList)
                             currList.clear()
-                            listViewAdapter?.notifyDataSetChanged()
                         }
-                        // if the task is canceled tun another task - the canceled taskl causes listview items to be updated
-                        if (asyncTask.isCancelled){
-                            //get the specific pokemon by the ID
-                            PokemonData.AsyncGetSpecificPokemon(this, pokemonIds).execute()
 
-                        }
+
                     } else {
                         val toast = Toast.makeText(context, "Sorry Nothing Was Found", Toast.LENGTH_SHORT)
                         toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 0)

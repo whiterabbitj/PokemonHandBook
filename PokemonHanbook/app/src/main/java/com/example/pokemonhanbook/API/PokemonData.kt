@@ -43,7 +43,7 @@ class PokemonData {
         }
 
         override fun doInBackground(vararg params: Pokemon): ArrayList<Pokemon>? {
-            var item: Pokemon? = null
+            var item: Pokemon?
             try {
                 //check if it is smaller than current item counter
                 while (tempCounter <= allItems && tempCounter <= 898) {
@@ -64,18 +64,18 @@ class PokemonData {
         }
         override fun onCancelled() {
             super.onCancelled()
-            //if cancelled reset the item count
+            /* if cancelled reset the item count */
             mainFrag?.updateCurCountOnCancel(allItems-10)
             mainFrag?.setLoadingAnimation(false , "Load")
         }
 
         override fun onPreExecute() {
             if (allItems == 10) {
-                progressDialog = ProgressDialog(act);
-                progressDialog!!.setCancelable(false);
-                progressDialog!!.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog!!.setTitle("Catching Some Pokemon");
-                progressDialog!!.setMessage("Please Wait...");
+                progressDialog = ProgressDialog(act)
+                progressDialog!!.setCancelable(false)
+                progressDialog!!.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+                progressDialog!!.setTitle("Catching Some Pokemon")
+                progressDialog!!.setMessage("Please Wait...")
                 progressDialog!!.show()
             }
         }
@@ -158,11 +158,6 @@ class PokemonData {
         override fun onPreExecute() {
         }
 
-        override fun onCancelled() {
-            super.onCancelled()
-
-        }
-
         override fun onProgressUpdate(vararg values: Pokemon) {
             super.onProgressUpdate(*values)
         }
@@ -198,7 +193,7 @@ class PokemonData {
         override fun onProgressUpdate(vararg values: String) {
             super.onProgressUpdate(*values)
         }
-        public fun updateString(string:String){
+        fun updateString(string:String){
             stringJson=string
         }
     }
@@ -223,9 +218,6 @@ class PokemonData {
                 return ""
             }
             return string
-        }
-        override fun onPreExecute() {
-            super.onPreExecute()
         }
 
         override fun onProgressUpdate(vararg values: String) {

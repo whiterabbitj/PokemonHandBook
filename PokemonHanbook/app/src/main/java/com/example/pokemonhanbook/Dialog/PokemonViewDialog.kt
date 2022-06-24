@@ -15,6 +15,8 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.synnapps.carouselview.CarouselView
 import com.synnapps.carouselview.ImageListener
 import me.sargunvohra.lib.pokekotlin.model.Pokemon
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PokemonViewDialog : DialogFragment() {
 
@@ -65,7 +67,7 @@ class PokemonViewDialog : DialogFragment() {
         view.findViewById<AppCompatTextView>(R.id.tv_pokemonNameDialog).text = pokeObject?.name?.substring(0, 1)?.let {
             String.format(
                 "%s%s",
-                it.toUpperCase(),
+                it.toUpperCase(Locale.ROOT),
                 pokeObject?.name?.substring(1)
 
             )
@@ -74,12 +76,11 @@ class PokemonViewDialog : DialogFragment() {
         val weight = pokeObject?.weight
         view.findViewById<AppCompatTextView>(R.id.tv_PokemonWeightVal).text =
             String.format("%s kg", ((weight?.toDouble())!! / 10).toString())
-        val height = pokeObject?.height
         val heightM = pokeObject?.height
         view.findViewById<AppCompatTextView>(R.id.tv_PokemonHeightVal).text =
             String.format("%s m", ((heightM?.toDouble())!! / 10).toString())
 
-        var tempAbilityString: String = ""
+        var tempAbilityString = ""
         pokeObject?.abilities?.forEach { x -> tempAbilityString += x.ability.name + "\n" }
         view.findViewById<AppCompatTextView>(R.id.tvAbilitiesVal).text = tempAbilityString
 
@@ -118,15 +119,6 @@ class PokemonViewDialog : DialogFragment() {
         private const val jsonObj = "jsonPokemonObject"
         private const val charString = "characteristics"
 
-        @JvmStatic
-        fun newInstance(json: String,charString:String ): PokemonViewDialog {
-            return PokemonViewDialog().apply {
-                arguments = Bundle().apply {
-                    putString(jsonObj, json)
-                    putString(jsonObj, charString)
-                }
-            }
-        }
     }
 
 }
